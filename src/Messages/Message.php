@@ -13,6 +13,8 @@ class Message extends Model
 
     public $fillable = [
         'message',
+        'file',
+        'voice',
         'is_seen',
         'deleted_from_sender',
         'deleted_from_receiver',
