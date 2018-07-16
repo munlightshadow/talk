@@ -2,6 +2,7 @@
 
 namespace Nahid\Talk\Conversations;
 
+use Nahid\Talk\Resources\ThreadResource;
 use SebastianBerc\Repositories\Repository;
 
 class ConversationRepository extends Repository
@@ -82,7 +83,7 @@ class ConversationRepository extends Repository
     {
         $conv = new Conversation();
         $conv->authUser = $user;
-        $msgThread = $conv->with(['messages' => function ($q) use ($user) {
+        $threads = $conv->with(['messages' => function ($q) use ($user) {
             return $q->where(function ($q) use ($user) {
                 $q->where('user_id', $user)
                         ->where('deleted_from_sender', 0);
@@ -100,17 +101,7 @@ class ConversationRepository extends Repository
             ->orderBy('updated_at', $order)
             ->get();
 
-        $threads = [];
-
-        foreach ($msgThread as $thread) {
-            $collection = (object) null;
-            $conversationWith = ($thread->userone->id == $user) ? $thread->usertwo : $thread->userone;
-            $collection->thread = $thread->messages->first();
-            $collection->withUser = $conversationWith;
-            $threads[] = $collection;
-        }
-
-        return collect($threads);
+        return ThreadResource::collection($threads);
     }
 
     /*

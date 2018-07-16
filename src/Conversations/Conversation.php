@@ -14,6 +14,11 @@ class Conversation extends Model
         'status',
     ];
 
+    protected $casts = [
+        'created_at' => '',
+        'updated_at' => ''
+    ];
+
     /*
      * make a relation between message
      *
@@ -32,7 +37,7 @@ class Conversation extends Model
      * */
     public function userone()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_one');
+        return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_one');
     }
 
     /*
@@ -42,6 +47,6 @@ class Conversation extends Model
    * */
     public function usertwo()
     {
-        return $this->belongsTo(config('talk.user.model', 'App\User'),  'user_two');
+        return $this->belongsTo(config('talk.user.model', 'App\User'), 'user_two');
     }
 }

@@ -10,7 +10,6 @@ class Message extends Model
 
     public $timestamps = true;
 
-
     public $fillable = [
         'message',
         'file',
@@ -20,6 +19,11 @@ class Message extends Model
         'deleted_from_receiver',
         'user_id',
         'conversation_id',
+    ];
+
+    protected $casts = [
+        'created_at' => '',
+        'updated_at' => ''
     ];
 
     /*
