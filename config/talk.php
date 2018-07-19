@@ -4,6 +4,12 @@ return [
     'user' => [
         'model' => 'App\User',
     ],
+    'files' => [
+        'model' => '',
+    ],
+    'voices' => [
+        'model' => '',
+    ],
     'broadcast' => [
         'enable' => false,
         'app_name' => 'your-app-name',

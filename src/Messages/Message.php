@@ -68,4 +68,24 @@ class Message extends Model
     {
         return $this->user();
     }
+
+    /*
+     * make a relation between files model
+     *
+     * @return collection
+     * */
+    public function files()
+    {
+        return $this->hasMany(config('talk.files.model'));
+    }
+
+    /*
+     * make a relation between voices model
+     *
+     * @return collection
+     * */
+    public function voices()
+    {
+        return $this->hasMany(config('talk.voices.model'));
+    }
 }

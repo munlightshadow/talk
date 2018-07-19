@@ -19,6 +19,6 @@ if (!function_exists('talk_live')) {
         $talk__userChannel['callback'] = isset($options['user']['callback']) ? $options['user']['callback'] : [];
         $talk__conversationChannel['callback'] = isset($options['conversation']['callback']) ? $options['conversation']['callback'] : [];
 
-        return view('talk::pusherjs', compact('talk__appKey', 'talk__options', 'talk__userChannel', 'talk__conversationChannel'))->render();
+//        return view('talk::pusherjs', compact('talk__appKey', 'talk__options', 'talk__userChannel', 'talk__conversationChannel'))->render();
     }
 }

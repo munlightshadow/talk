@@ -15,6 +15,7 @@ use Illuminate\Contracts\Config\Repository;
 use Nahid\Talk\Conversations\ConversationRepository;
 use Nahid\Talk\Messages\MessageRepository;
 use Nahid\Talk\Live\Broadcast;
+use Nahid\Talk\Resources\MessageResource;
 
 class Talk
 {
@@ -122,11 +123,11 @@ class Talk
 
         $collection = (object) null;
         if ($conversations->user_one == $this->authUserId || $conversations->user_two == $this->authUserId) {
-            $withUser = ($conversations->userone->id === $this->authUserId) ? $conversations->usertwo : $conversations->userone;
-            $collection->withUser = $withUser;
-            $collection->messages = $conversations->messages;
+//            $withUser = ($conversations->userone->id === $this->authUserId) ? $conversations->usertwo : $conversations->userone;
+//            $collection->withUser = $withUser;
+//            $collection->messages = $conversations->messages;
 
-            return $collection;
+            return MessageResource::collection($conversations->messages);
         }
 
         return false;
