@@ -142,17 +142,28 @@ class ConversationRepository extends Repository
      * */
     public function getMessagesById($conversationId, $userId, $offset, $take)
     {
-        return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take) {
-            $query->where(function ($qr) use ($userId) {
+        $mid = $_REQUEST['mid'] ?? null;
+
+        return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take, $mid) {
+            $query->where(function ($qr) use ($userId, $mid) {
                 $qr->where('user_id', '=', $userId)
                     ->where('deleted_from_sender', 0);
+
+                if (isset($mid)) {
+                    $qr->where('id', '<', $mid);
+                }
             })
-            ->orWhere(function ($q) use ($userId) {
+            ->orWhere(function ($q) use ($userId, $mid) {
                 $q->where('user_id', '!=', $userId)
                     ->where('deleted_from_receiver', 0);
+
+                if (isset($mid)) {
+                    $q->where('id', '<', $mid);
+                }
             });
 
-            $query->offset($offset)->take($take);
+            $query->orderBy('created_at', 'desc');
+            $query->take($take);
 
         }])->with(['userone', 'usertwo'])->find($conversationId);
 

@@ -104,7 +104,8 @@ class Talk
 
         $message->conversation->touch();
 
-        $this->broadcast->transmission($message);
+        /** Uncomment for broadcast notify */
+//        $this->broadcast->transmission($message);
 
         return $message;
     }
@@ -121,12 +122,7 @@ class Talk
             return false;
         }
 
-        $collection = (object) null;
         if ($conversations->user_one == $this->authUserId || $conversations->user_two == $this->authUserId) {
-//            $withUser = ($conversations->userone->id === $this->authUserId) ? $conversations->usertwo : $conversations->userone;
-//            $collection->withUser = $withUser;
-//            $collection->messages = $conversations->messages;
-
             return MessageResource::collection($conversations->messages);
         }
 
