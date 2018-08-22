@@ -163,9 +163,9 @@ class ConversationRepository extends Repository
                         ->where('deleted_from_receiver', 0);
 
                     if (isset($mid) && (!isset($dir) || $dir == 'up')) {
-                        $qr->where('id', '<', $mid);
+                        $q->where('id', '<', $mid);
                     } elseif (isset($mid) && isset($dir) && $dir == 'down') {
-                        $qr->where('id', '>', $mid);
+                        $q->where('id', '>', $mid);
                     }
                 });
             });
