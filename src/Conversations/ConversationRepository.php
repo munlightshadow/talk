@@ -143,23 +143,31 @@ class ConversationRepository extends Repository
     public function getMessagesById($conversationId, $userId, $offset, $take)
     {
         $mid = $_REQUEST['mid'] ?? null;
-
+        $dir = $_REQUEST['dir'] ?? null;
+        
         return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take, $mid) {
-            $query->where(function ($qr) use ($userId, $mid) {
-                $qr->where('user_id', '=', $userId)
-                    ->where('deleted_from_sender', 0);
+            $query->where(function ($qu) use ($userId, $mid) {
 
-                if (isset($mid)) {
-                    $qr->where('id', '<', $mid);
-                }
-            })
-            ->orWhere(function ($q) use ($userId, $mid) {
-                $q->where('user_id', '!=', $userId)
-                    ->where('deleted_from_receiver', 0);
+                $qu->where(function ($qr) use ($userId, $mid) {
+                    $qr->where('user_id', '=', $userId)
+                        ->where('deleted_from_sender', 0);
 
-                if (isset($mid)) {
-                    $q->where('id', '<', $mid);
-                }
+                    if (isset($mid) && (!isset($dir) || $dir == 'up')) {
+                        $qr->where('id', '<', $mid);
+                    } elseif (isset($mid) && isset($dir) && $dir == 'down') {
+                        $qr->where('id', '>', $mid);
+                    }
+                })
+                ->orWhere(function ($q) use ($userId, $mid) {
+                    $q->where('user_id', '!=', $userId)
+                        ->where('deleted_from_receiver', 0);
+
+                    if (isset($mid) && (!isset($dir) || $dir == 'up')) {
+                        $qr->where('id', '<', $mid);
+                    } elseif (isset($mid) && isset($dir) && $dir == 'down') {
+                        $qr->where('id', '>', $mid);
+                    }
+                });
             });
 
             $query->orderBy('created_at', 'desc');
