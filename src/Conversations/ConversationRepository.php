@@ -144,33 +144,42 @@ class ConversationRepository extends Repository
     {
         $mid = $_REQUEST['mid'] ?? null;
         $dir = $_REQUEST['dir'] ?? null;
-        
-        return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take, $mid) {
-            $query->where(function ($qu) use ($userId, $mid) {
 
-                $qu->where(function ($qr) use ($userId, $mid) {
+        return Conversation::with(['messages' => function ($query) use ($userId, $offset, $take, $mid, $dir) {
+            $query->where(function ($qu) use ($userId, $mid, $dir) {
+
+                $qu->where(function ($qr) use ($userId, $mid, $dir) {
                     $qr->where('user_id', '=', $userId)
                         ->where('deleted_from_sender', 0);
 
-                    if (isset($mid) && (!isset($dir) || $dir == 'up')) {
-                        $qr->where('id', '<', $mid);
-                    } elseif (isset($mid) && isset($dir) && $dir == 'down') {
-                        $qr->where('id', '>', $mid);
+                    if (isset($mid)) {
+                        if (isset($dir) && $dir == 'down') {
+                            $qr->where('id', '>', $mid);
+                        } else {
+                            $qr->where('id', '<', $mid);
+                        }
                     }
                 })
-                ->orWhere(function ($q) use ($userId, $mid) {
+                ->orWhere(function ($q) use ($userId, $mid, $dir) {
                     $q->where('user_id', '!=', $userId)
                         ->where('deleted_from_receiver', 0);
 
-                    if (isset($mid) && (!isset($dir) || $dir == 'up')) {
-                        $q->where('id', '<', $mid);
-                    } elseif (isset($mid) && isset($dir) && $dir == 'down') {
-                        $q->where('id', '>', $mid);
+                    if (isset($mid)) {
+                        if (isset($dir) && $dir == 'down') {
+                            $q->where('id', '>', $mid);
+                        } else {
+                            $q->where('id', '<', $mid);
+                        }
                     }
                 });
             });
 
-            $query->orderBy('created_at', 'desc');
+            if (isset($dir) && $dir == 'down') {
+                $query->orderBy('created_at', 'asc');
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
+
             $query->take($take);
 
         }])->with(['userone', 'usertwo'])->find($conversationId);
